@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 
 COPY src/ .
 
-CMD [ "python", "./core.py "]
+CMD [ "python", "./core.py"]
