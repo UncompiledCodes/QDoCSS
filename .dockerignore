@@ -1,5 +1,3 @@
-/notebooks
-
+.vscode/
 requirements.in
-
-/.vscode
+notebooks/
