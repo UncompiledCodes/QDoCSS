@@ -1,6 +1,13 @@
 from qutip import *
 from numpy import pi
 
+
+si = qeye(2)
+sx = sigmax()
+sy = sigmay()
+sz = sigmaz()
+sm = sigmam()
+sp = sigmap()
 n = 3  # number of nuclei
 
 m = 1  # number of electrons
@@ -27,5 +34,52 @@ gama = Qobj(
 
 t = (10 * 2 * pi) / extmagfield_m  # value of time
 
+# spin oprators
+def spin_operators(N):
+    """calculating spin oprators
 
-print(gama)
+    Args:
+        N (int): number of electrons or atoms
+
+    Returns:
+        matrix: matrices of spin oprators
+    """
+    Sx = []
+    Sy = []
+    Sz = []
+    Sp = []
+    Sm = []
+
+    for n in range(N):
+        x_list = []
+        y_list = []
+        z_list = []
+        p_list = []
+        m_list = []
+        for m in range(N):
+            x_list.append(si)
+            y_list.append(si)
+            z_list.append(si)
+            p_list.append(si)
+            m_list.append(si)
+
+        x_list[n] = sx
+        y_list[n] = sy
+        z_list[n] = sz
+        p_list[n] = sp
+        m_list[n] = sm
+
+        Sx.append(tensor(x_list))
+        Sy.append(tensor(y_list))
+        Sz.append(tensor(z_list))
+        Sp.append(tensor(p_list))
+        Sm.append(tensor(m_list))
+    # print(Qobj(Sx[1]))
+    return [Sx, Sy, Sz, Sp, Sm]
+    # return Qobj(Sx)
+
+
+Sx, Sy, Sz, Sp, Sm = spin_operators(2)
+
+for i in range(2):
+    print(Sx[i])
