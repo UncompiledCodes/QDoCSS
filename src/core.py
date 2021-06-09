@@ -1,5 +1,6 @@
 from qutip import *
 from numpy import pi
+from scipy.special import jv
 
 # Identity matrix
 si = qeye(2)
@@ -31,6 +32,16 @@ gama = Qobj(
 )
 # value of time
 t = (10 * 2 * pi) / extmagfield_m
+# value of E1
+E1 = (
+    1 / 2 * JJ
+    + 1 / 2 * gama
+    + 1 / 2 * AA
+    + 1 / 2 * extmagfield_n
+    + 1 / 2 * extmagfield_m
+)
+tau = E1 * t / 2
+kappa = 3 / 2 * tau
 
 
 def spin_op(N):
@@ -113,29 +124,50 @@ def hamiltonian(m, n, JJ, AA, gama, extmagfield_m, extmagfield_n):
     return HH
 
 
-def G_op(m, n, JJ, AA, gama, extmagfield_m, extmagfield_n):
-    """calculates hamiltonian and
-        using that, calculates G oprator
+def TG(k, G):
+    """recursive function to calculate T
 
     Args:
-        m (int): number of electrons
-        n (int): number of nuclei
-        JJ (matrix): exchange interaction constant
-        AA (matrix): exchange interaction constant
-        gama (matrix): exchange interaction constant
-        extmagfield_m (int): external magnetic field of m
-        extmagfield_n (matrix): external magnetic field of n
+        k (int): number of times to calculate
+        G (matrix): oprator G
+
+    Returns:
+        matrix: matrix of T in a speccific k
+    """
+    if k == 1:
+        return 1
+    elif k == 2:
+        return G
+    else:
+        return 2 * G * TG(k - 1, G) - TG(k - 2, G)
+
+
+def Ut(kappa, tau, G):
+    """calculating the evolution oprator
+
+    Args:
+        kappa ([type]): [description]
+        tau ([type]): [description]
+        G ([type]): [description]
 
     Returns:
         [type]: [description]
     """
+    UU = 0
+    for k in range(1, kappa + 1):
+        a = 1
+        if k == 0:
+            a = 2
+        UU += a * ((1j) ** k) * jv(k, tau) * TG(k, G)
+    return UU
+
+
+def main(m, n, JJ, AA, gama, extmagfield_m, extmagfield_n, kappa, tau):
     HH = hamiltonian(m, n, JJ, AA, gama, extmagfield_m, extmagfield_n)
-    E1 = (
-        1 / 2 * JJ
-        + 1 / 2 * gama
-        + 1 / 2 * AA
-        + 1 / 2 * extmagfield_n
-        + 1 / 2 * extmagfield_m
-    )
     G = 2 * HH / E1
-    return G
+    UU = Ut(kappa, tau, G)
+    print(UU)
+
+
+if __name__ == "__main__":
+    main(m, n, JJ, AA, gama, extmagfield_m, extmagfield_n, kappa, tau)
