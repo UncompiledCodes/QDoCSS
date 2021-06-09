@@ -28,7 +28,9 @@ python-dateutil==2.8.1
 qutip==4.6.1
     # via -r requirements.in
 scipy==1.6.3
-    # via qutip
+    # via
+    #   -r requirements.in
+    #   qutip
 six==1.16.0
     # via
     #   cycler
