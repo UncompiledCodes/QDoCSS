@@ -32,9 +32,9 @@ gama = Qobj(
 # value of time
 t = (10 * 2 * pi) / extmagfield_m
 
-# spin oprators
-def spin_operators(N):
-    """calculating spin oprators
+
+def spin_op(N):
+    """calculates spin oprators
 
     Args:
         N (int): number of electrons or atoms
@@ -68,7 +68,8 @@ def spin_operators(N):
 
 
 def hamiltonian(m, n, JJ, AA, gama, extmagfield_m, extmagfield_n):
-    """calculating system hamiltonian
+    """calculates spin oprators and
+       using them, calculates system hamiltonian
 
     Args:
         m (int): number of electrons
@@ -80,11 +81,11 @@ def hamiltonian(m, n, JJ, AA, gama, extmagfield_m, extmagfield_n):
         extmagfield_n (matrix): external magnetic field of n
 
     Returns:
-        matrix: hamiltonian of he entire system
+        matrix: hamiltonian of the entire system
     """
     # calculating spin operators
-    Sx, Sy, Sz = spin_operators(m)
-    Ix, Iy, Iz = spin_operators(n)
+    Sx, Sy, Sz = spin_op(m)
+    Ix, Iy, Iz = spin_op(n)
     # HS & HB are bare hamiltonians of the central system and bath
     # V is the system-bath interaction
     HS = HB = V = 0
@@ -110,3 +111,31 @@ def hamiltonian(m, n, JJ, AA, gama, extmagfield_m, extmagfield_n):
 
     HH = HS + HB + V
     return HH
+
+
+def G_op(m, n, JJ, AA, gama, extmagfield_m, extmagfield_n):
+    """calculates hamiltonian and
+        using that, calculates G oprator
+
+    Args:
+        m (int): number of electrons
+        n (int): number of nuclei
+        JJ (matrix): exchange interaction constant
+        AA (matrix): exchange interaction constant
+        gama (matrix): exchange interaction constant
+        extmagfield_m (int): external magnetic field of m
+        extmagfield_n (matrix): external magnetic field of n
+
+    Returns:
+        [type]: [description]
+    """
+    HH = hamiltonian(m, n, JJ, AA, gama, extmagfield_m, extmagfield_n)
+    E1 = (
+        1 / 2 * JJ
+        + 1 / 2 * gama
+        + 1 / 2 * AA
+        + 1 / 2 * extmagfield_n
+        + 1 / 2 * extmagfield_m
+    )
+    G = 2 * HH / E1
+    return G
