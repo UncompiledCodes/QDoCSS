@@ -67,20 +67,12 @@ def spin_operators(N):
     return [Sx, Sy, Sz]
 
 
-def hamiltonian(
-    m, n, Sx, Sy, Sz, Ix, Iy, Iz, JJ, AA, gama, extmagfield_m, extmagfield_n
-):
+def hamiltonian(m, n, JJ, AA, gama, extmagfield_m, extmagfield_n):
     """calculating system hamiltonian
 
     Args:
         m (int): number of electrons
         n (int): number of nuclei
-        Sx (matrix): coupled spin
-        Sy (matrix): coupled spins
-        Sz (matrix): coupled spins
-        Ix (matrix): environmental spin
-        Iy (matrix): environmental spin
-        Iz (matrix): environmental spin
         JJ (matrix): exchange interaction constant
         AA (matrix): exchange interaction constant
         gama (matrix): exchange interaction constant
@@ -90,6 +82,9 @@ def hamiltonian(
     Returns:
         matrix: hamiltonian of he entire system
     """
+    # calculating spin operators
+    Sx, Sy, Sz = spin_operators(m)
+    Ix, Iy, Iz = spin_operators(n)
     # HS & HB are bare hamiltonians of the central system and bath
     # V is the system-bath interaction
     HS = HB = V = 0
