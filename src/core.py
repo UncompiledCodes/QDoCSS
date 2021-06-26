@@ -11,25 +11,26 @@ sy = sigmay()
 # pauli z
 sz = sigmaz()
 # number of nuclei
-n = 3
+n = 2
 # number of electrons
 m = 1
 # external magnetic field of m
 extmagfield_m = 1
 # external magnetic field of n
-extmagfield_n = Qobj([[0, 0, 0], [0, 0, 0], [0.3, 0.3, 0.3]])
+extmagfield_n = 1 #Qobj([[0, 0, 0], [0, 0, 0], [0.3, 0.3, 0.3]])
 # value of exchange interaction constant: J
-JJ = Qobj([[0, 0, 0], [0, 0, 0], [0, 0, 0]])
+JJ = 1 #Qobj([[0, 0, 0], [0, 0, 0], [0, 0, 0]])
 # value of exchange interaction constant: A
-AA = Qobj([[0, 0, 0], [0, 0, 0], [0.99925, 0.625147, 0.551273]])
+AA = 1 #Qobj([[0, 0, 0], [0, 0, 0], [0.99925, 0.625147, 0.551273]])
 # value of exchange interaction constant: Gama
-gama = Qobj(
-    [
-        [0.0124425, 0.0806628, 0.00999575],
-        [0.0550028, 0.0758354, 0.07346340],
-        [0.0972069, 0.0723954, 0.07405450],
-    ]
-)
+# gama = Qobj(
+#     [
+#         [0.0124425, 0.0806628, 0.00999575],
+#         [0.0550028, 0.0758354, 0.07346340],
+#         [0.0972069, 0.0723954, 0.07405450],
+#     ]
+# )
+gama = 1
 # value of time
 t = (10 * 2 * pi) / extmagfield_m
 # value of E1
@@ -95,30 +96,29 @@ def hamiltonian(m, n, JJ, AA, gama, extmagfield_m, extmagfield_n):
         matrix: hamiltonian of the entire system
     """
     # calculating spin operators
-    Sx, Sy, Sz = spin_op(m)
-    Ix, Iy, Iz = spin_op(n)
+    Sx, Sy, Sz = spin_op(m+n)
     # HS & HB are bare hamiltonians of the central system and bath
     # V is the system-bath interaction
     HS = HB = V = 0
-    for i in range(m):
+    for i in range(n,m+1):
         HS += extmagfield_m * Sx[i] + extmagfield_m * Sy[i] + extmagfield_m * Sz[i]
-        for j in range(m):
+        for j in range(n,m+1):
             if m != 1:
                 if i == j:
                     continue
             HS += JJ * Sx[i] * Sx[j] + JJ * Sy[i] * Sy[j] + JJ * Sz[i] * Sz[j]
 
     for i in range(n):
-        HB += extmagfield_n * Ix[i] + extmagfield_n * Iy[i] + extmagfield_n * Iz[i]
+        HB += extmagfield_n * Sx[i] + extmagfield_n * Sy[i] + extmagfield_n * Sz[i]
         for j in range(n):
             if n != 1:
                 if i == j:
                     continue
-            HB += gama * Ix[i] * Ix[j] + gama * Iy[i] * Iy[j] + gama * Iz[i] * Iz[j]
+            HB += gama * Sx[i] * Sx[j] + gama * Sy[i] * Sy[j] + gama * Sz[i] * Sz[j]
 
-    for i in range(m):
+    for i in range(n,m+n):
         for j in range(n):
-            V += AA * Sx[i] * Ix[j] + AA * Sy[i] * Iy[j] + AA * Sz[i] * Iz[j]
+            V += AA * Sx[i] * Sx[j] + AA * Sy[i] * Sy[j] + AA * Sz[i] * Sz[j]
 
     HH = HS + HB + V
     return HH
@@ -154,7 +154,7 @@ def Ut(kappa, tau, G):
         [type]: [description]
     """
     UU = 0
-    for k in range(1, kappa + 1):
+    for k in range(1, int(kappa) + 1):
         a = 1
         if k == 0:
             a = 2
@@ -166,7 +166,7 @@ def main(m, n, JJ, AA, gama, extmagfield_m, extmagfield_n, kappa, tau):
     HH = hamiltonian(m, n, JJ, AA, gama, extmagfield_m, extmagfield_n)
     G = 2 * HH / E1
     UU = Ut(kappa, tau, G)
-    print(UU)
+    return(Qobj(UU))
 
 
 if __name__ == "__main__":
