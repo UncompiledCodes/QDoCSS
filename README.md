@@ -5,10 +5,10 @@ QDOCSS stands for quantum decoherence of central spin systems.
 ## **Enviroment**
 
 * **Python Virtualenv**
-    
+
     Install python `virtualenv` package using `pip` : `pip install virtualenv` .
 
-    Create a virtual enviroment using :` python -m venv env` .
+    Create a virtual enviroment using :`python -m venv env` .
 
     Install the requirements using : `pip install -r requirements.txt` .
 
@@ -17,8 +17,8 @@ QDOCSS stands for quantum decoherence of central spin systems.
     **Note**: If you are using conda, just install the requirements and carry on.
 
 * **Docker**
-    
-    If you prefer to use Docker, simply build a Docker image using:  `docker build -t qdocss .`
+
+    If you prefer to use Docker, simply build a Docker image using:  `docker build -t qdocss .`.
 
     run the docker image using `docker run qdocss`.
 
@@ -26,6 +26,6 @@ QDOCSS stands for quantum decoherence of central spin systems.
 
 **src** : The directory in which python codes exist.
 
-**notebooks** : The directory in which jupyter notebooks exist. *COMING SOON*
+**notebooks** : The directory in which jupyter notebooks exist.
 
 **data** : The directory in which input and output data exist. *COMING SOON*
