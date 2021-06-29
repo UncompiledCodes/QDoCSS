@@ -16,16 +16,10 @@ QDOCSS stands for quantum decoherence of central spin systems.
 
     **Note**: If you are using conda, just install the requirements and carry on.
 
-* **Docker**
-
-    If you prefer to use Docker, simply build a Docker image using:  `docker build -t qdocss .`.
-
-    run the docker image using `docker run qdocss`.
-
 ## **Directories**
-
-**src** : The directory in which python codes exist.
 
 **notebooks** : The directory in which jupyter notebooks exist.
 
-**data** : The directory in which input and output data exist. *COMING SOON*
+**report** : The directory in which project report files exist.
+
+**tex** : The directory in which project report latex builder exist.
