@@ -21,5 +21,3 @@ QDOCSS stands for quantum decoherence of central spin systems.
 **notebooks** : The directory in which jupyter notebooks exist.
 
 **report** : The directory in which project report files exist.
-
-**tex** : The directory in which project report latex builder exist.
