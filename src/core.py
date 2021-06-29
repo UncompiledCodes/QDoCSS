@@ -2,27 +2,17 @@ from qutip import *
 from numpy import pi
 from scipy.special import jv
 
-# Identity matrix
+############## Constants ##################
 si = qeye(2)
-# pauli x
 sx = sigmax()
-# pauli y
 sy = sigmay()
-# pauli z
 sz = sigmaz()
-# number of nuclei
-n = 2
-# number of electrons
-m = 1
-# external magnetic field of m
+n = 2  # number of nuclei
+m = 1  # number of electrons
 extmagfield_m = 1
-# external magnetic field of n
-extmagfield_n = 1 #Qobj([[0, 0, 0], [0, 0, 0], [0.3, 0.3, 0.3]])
-# value of exchange interaction constant: J
-JJ = 1 #Qobj([[0, 0, 0], [0, 0, 0], [0, 0, 0]])
-# value of exchange interaction constant: A
-AA = 1 #Qobj([[0, 0, 0], [0, 0, 0], [0.99925, 0.625147, 0.551273]])
-# value of exchange interaction constant: Gama
+extmagfield_n = 1  # Qobj([[0, 0, 0], [0, 0, 0], [0.3, 0.3, 0.3]])
+JJ = 1  # Qobj([[0, 0, 0], [0, 0, 0], [0, 0, 0]])
+AA = 1  # Qobj([[0, 0, 0], [0, 0, 0], [0.99925, 0.625147, 0.551273]])
 # gama = Qobj(
 #     [
 #         [0.0124425, 0.0806628, 0.00999575],
@@ -31,9 +21,7 @@ AA = 1 #Qobj([[0, 0, 0], [0, 0, 0], [0.99925, 0.625147, 0.551273]])
 #     ]
 # )
 gama = 1
-# value of time
 t = (10 * 2 * pi) / extmagfield_m
-# value of E1
 E1 = (
     1 / 2 * JJ
     + 1 / 2 * gama
@@ -43,8 +31,9 @@ E1 = (
 )
 tau = E1 * t / 2
 kappa = 3 / 2 * tau
+############## Constants ##################
 
-
+############## Spin #######################
 def spin_op(N):
     """calculates spin oprators
 
@@ -79,6 +68,10 @@ def spin_op(N):
     return [Sx, Sy, Sz]
 
 
+############## Spin #######################
+
+
+############## Hamiltonian ################
 def hamiltonian(m, n, JJ, AA, gama, extmagfield_m, extmagfield_n):
     """calculates spin oprators and
        using them, calculates system hamiltonian
@@ -96,13 +89,13 @@ def hamiltonian(m, n, JJ, AA, gama, extmagfield_m, extmagfield_n):
         matrix: hamiltonian of the entire system
     """
     # calculating spin operators
-    Sx, Sy, Sz = spin_op(m+n)
+    Sx, Sy, Sz = spin_op(m + n)
     # HS & HB are bare hamiltonians of the central system and bath
     # V is the system-bath interaction
     HS = HB = V = 0
-    for i in range(n,m+1):
+    for i in range(n, m + 1):
         HS += extmagfield_m * Sx[i] + extmagfield_m * Sy[i] + extmagfield_m * Sz[i]
-        for j in range(n,m+1):
+        for j in range(n, m + 1):
             if m != 1:
                 if i == j:
                     continue
@@ -116,7 +109,7 @@ def hamiltonian(m, n, JJ, AA, gama, extmagfield_m, extmagfield_n):
                     continue
             HB += gama * Sx[i] * Sx[j] + gama * Sy[i] * Sy[j] + gama * Sz[i] * Sz[j]
 
-    for i in range(n,m+n):
+    for i in range(n, m + n):
         for j in range(n):
             V += AA * Sx[i] * Sx[j] + AA * Sy[i] * Sy[j] + AA * Sz[i] * Sz[j]
 
@@ -124,6 +117,9 @@ def hamiltonian(m, n, JJ, AA, gama, extmagfield_m, extmagfield_n):
     return HH
 
 
+############## Hamiltonian ################
+
+############ Chebyshev series #############
 def TG(k, G):
     """recursive function to calculate T
 
@@ -142,6 +138,10 @@ def TG(k, G):
         return 2 * G * TG(k - 1, G) - TG(k - 2, G)
 
 
+############ Chebyshev series #############
+
+
+############ Evolution Operator ###########
 def Ut(kappa, tau, G):
     """calculating the evolution oprator
 
@@ -162,11 +162,14 @@ def Ut(kappa, tau, G):
     return UU
 
 
+############ Evolution Operator ###########
+
+
 def main(m, n, JJ, AA, gama, extmagfield_m, extmagfield_n, kappa, tau):
     HH = hamiltonian(m, n, JJ, AA, gama, extmagfield_m, extmagfield_n)
     G = 2 * HH / E1
     UU = Ut(kappa, tau, G)
-    return(Qobj(UU))
+    return Qobj(UU)
 
 
 if __name__ == "__main__":
