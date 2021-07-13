@@ -436,3 +436,5 @@ src/
 meeting.md
 
 tex/
+
+.idea/
